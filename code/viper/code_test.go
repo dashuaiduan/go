@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// 官网文档  ，或者地鼠文档 https://www.topgoer.cn/docs/goday/goday-1crg2dneqeek8
 func TestName(t *testing.T) {
 	//以yaml文件为实例  其他json ini 等文件同理
 	// 读取配置文件   一般 一个v对应一个配置文件

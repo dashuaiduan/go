@@ -25,6 +25,7 @@ require (
 	github.com/lib/pq v1.10.5 // indirect
 	github.com/mailru/easyjson v0.7.7
 	github.com/mojocn/base64Captcha v1.2.2
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/viper v1.10.1
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
 	github.com/swaggo/gin-swagger v1.4.2 // indirect
