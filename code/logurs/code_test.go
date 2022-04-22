@@ -1,8 +1,12 @@
 package logurs1
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/sirupsen/logrus"
+	"io"
 	"log"
+	"os"
 	"testing"
 )
 
@@ -41,17 +45,53 @@ func TestLogrus(t *testing.T) {
 	//Debug：一般程序中输出的调试信息；
 	//Trace：很细粒度的信息，一般用不到；
 
-	logrus.SetLevel(logrus.ErrorLevel) // 设置输出级别
+	logrus.SetLevel(logrus.TraceLevel) // 设置输出级别
 
 	logrus.Trace("trace msg")
 	logrus.Debug("debug msg")
 	logrus.Info("info msg")
 	logrus.Warn("warn msg")
 	logrus.Error("error msg")
-	logrus.Fatal("fatal msg")
-	logrus.Panic("panic msg")
+	//logrus.Fatal("fatal msg")
+	//logrus.Panic("panic msg")
 
-	logrus.SetReportCaller(true)
+	logrus.SetReportCaller(true) //设置在输出日志中添加文件名和方法信息：
 
+	//time="2022-04-22T09:40:09+08:00" level=info msg="info msg" func=test/code/logurs.TestLogrus file="D:/goproject/go/code/logurs/code_test.go:56"
 	logrus.Info("info msg")
+
+	fmt.Println("-------------------------------")
+	// 固定输出信息  使用requestLogger 对象输出的时候 固定输出WithFields配置的内容，同时使用requestLogger会继承logrus的配置
+	requestLogger := logrus.WithFields(logrus.Fields{
+		"user_id": 10010,
+		"ip":      "192.168.32.15",
+	})
+
+	//level=info msg="info msg" func=test/code/logurs.TestLogrus file="D:/goproject/go/code/logurs/code_test.go:67" ip=192.168.32.15 user_id=10010
+	requestLogger.Info("info msg")
+	requestLogger.Error("error msg")
+}
+
+// 测试多重写MultiWriter
+func TestWww(t *testing.T) {
+	writer1 := &bytes.Buffer{}
+	writer2 := os.Stdout
+	writer3, err := os.OpenFile("log.txt", os.O_WRONLY|os.O_CREATE, 0755)
+	if err != nil {
+		log.Fatalf("create file log.txt failed: %v", err)
+	}
+
+	logrus.SetOutput(io.MultiWriter(writer1, writer2, writer3))
+	logrus.Info("info msg")
+}
+
+//自定义log
+func TestNew(t *testing.T) {
+	log := logrus.New()
+
+	log.SetLevel(logrus.InfoLevel)
+	log.SetFormatter(&logrus.JSONFormatter{}) // 支持两种日志格式，文本和 JSON，默认为文本格式。可以通过logrus.SetFormatter设置日志格式
+
+	log.Info("info msg")
+
 }
