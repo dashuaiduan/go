@@ -78,7 +78,7 @@ func TestName(t *testing.T) {
 }
 
 type Config struct {
-	Port        int    `mapstructure:"port"`
+	Port        int    `mapstructure:"portttt"`
 	Cas         string `mapstructure:"cas"`
 	MySqlConfig `mapstructure:"mysql"`
 }
