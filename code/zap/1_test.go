@@ -17,7 +17,7 @@ func Test1(t *testing.T) {
 		zap.Int("attempt", 3),
 		zap.Duration("backoff", time.Second*10),
 	)
-
+	//这种方式简单直观 但是 性能下降50%
 	sugar := logger.Sugar()
 	sugar.Infow("failed to fetch URL",
 		"url", url,
