@@ -55,5 +55,7 @@ func Test11121(t *testing.T) {
 }
 
 func Test65664(t *testing.T) {
-
+	a := map[string]interface{}{"a": "aa"}
+	fmt.Println(a["a"])
+	fmt.Println(a["1213"].(string))
 }

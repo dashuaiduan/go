@@ -1,13 +1,13 @@
 b:
-  c:
-    c1: c1c1c1c1
-    c2: c2c2c2c2
-  d:
-    d1: d1d1d1d1
-    d2: d2d2d2d2d
+    c:
+        c1: c1c1c1c1
+        c2: c2c2c2c2
+    d:
+        d1: d1d1d1d1
+        d2: d2d2d2d2d
 cas: cas21
 mysql:
-  dbname: cas
-  host: 127.0.0.1
-  port: "3306"
+    dbname: cas
+    host: 127.0.0.1
+    port: "3306"
 port: 8080
