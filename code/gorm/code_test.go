@@ -21,8 +21,8 @@ var DB *gorm.DB
 //自定义 时间 替换 create update time 的默认 time.time 解决读取数据时，读出来的时间是没有格式化的time问题
 type LocalTime time.Time
 
-func (t *LocalTime) MarshalJSON() ([]byte, error) {
-	tTime := time.Time(*t)
+func (t LocalTime) MarshalJSON() ([]byte, error) {
+	tTime := time.Time(t)
 	return []byte(fmt.Sprintf("\"%v\"", tTime.Format("2006-01-02 15:04:05"))), nil
 }
 func (t LocalTime) Value() (driver.Value, error) {
