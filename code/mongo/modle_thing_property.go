@@ -109,3 +109,41 @@ func (tpl *ThingProperty) CountDocuments(filter map[string]interface{}) (total i
 	total, err = ThingReport.CountDocuments(context.Background(), filter)
 	return
 }
+
+// GetDayReport pipeday  对应mongo 客户端聚合命令
+/*
+db.c_thing_property.aggregate( [
+
+{
+			$match: { "device_id": "testdevice_id" }
+},
+{
+			$project: {
+					dt:{$dateToString:{format:"%Y-%m-%d",date:{$toDate:{$add:[28800000,"$timestamp"]}}}},
+					key:1
+			}
+},
+{
+			$group: {
+			_id:{dt:"$dt",key:"$key"},
+			count:{$sum:1},
+			}
+},
+{
+			$sort: {
+			count:-1,
+			}
+},
+{
+			$limit:2
+},
+{
+			$project: {
+					_id:0,
+					key:"$_id.key",
+					datetime:"$_id.dt",
+					count:1
+			}
+},
+]);
+*/
