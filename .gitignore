@@ -3,3 +3,5 @@
 gin.log
 /code/swag/docs/
 /code/logurs/log.txt
+go.mod
+go.sum
