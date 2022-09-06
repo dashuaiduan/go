@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/json"
+	uuid "github.com/satori/go.uuid"
 	"math/big"
 	"strings"
 	"time"
 )
-import uuid "github.com/satori/go.uuid"
 
 func UUIDGen() string {
 	return strings.ReplaceAll(uuid.NewV4().String(), "-", "")
@@ -76,7 +76,7 @@ func GetCurrentNanoUnix() int64 {
 }
 
 //获取相差时间 相差几小时
-func getHourDiffer(startTime, endTime string) int64 {
+func GetHourDiffer(startTime, endTime string) int64 {
 	var hour int64
 	t1, err := time.ParseInLocation("2006-01-02 15:04:05", startTime, time.Local)
 	t2, err := time.ParseInLocation("2006-01-02 15:04:05", endTime, time.Local)

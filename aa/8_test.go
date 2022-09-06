@@ -3,8 +3,6 @@ package aa
 import (
 	"fmt"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"io"
 	"runtime"
 	"sync"
 	"testing"
@@ -151,44 +149,3 @@ func Test88(t *testing.T) {
 }
 
 var Logger *zap.Logger
-
-func Test89(t *testing.T) {
-	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
-	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-		MessageKey:  "msg",
-		LevelKey:    "level",
-		EncodeLevel: zapcore.CapitalLevelEncoder,
-		TimeKey:     "ts",
-		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-			enc.AppendString(t.Format("2006-01-02 15:04:05"))
-		},
-		CallerKey:    "file",
-		EncodeCaller: zapcore.ShortCallerEncoder,
-		EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
-			enc.AppendInt64(int64(d) / 1000000)
-		},
-	})
-
-	// 实现两个判断日志等级的interface (其实 zapcore.*Level 自身就是 interface)
-	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl < zapcore.WarnLevel
-	})
-
-	warnLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.WarnLevel
-	})
-
-	// 获取 info、warn日志文件的io.Writer 抽象 getWriter() 在下方实现
-	infoWriter := getWriter("/path/log/demo.log")
-	warnWriter := getWriter("/path/log/demo_error.log")
-
-	// 最后创建具体的Logger
-	core := zapcore.NewTee(
-		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
-		zapcore.NewCore(encoder, zapcore.AddSync(warnWriter), warnLevel),
-	)
-
-	Logger = zap.New(core, zap.AddCaller()) // 需要传入 zap.AddCaller() 才会显示打日志点的文件名和行数
-}
-func getWriter(filename string) {
-}
