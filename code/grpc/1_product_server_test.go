@@ -8,7 +8,8 @@ import (
 	"testing"
 )
 
-func Test111(t *testing.T) {
+// 无tls认证服务端
+func Test11(t *testing.T) {
 	server := grpc.NewServer()
 	service.RegisterProdServiceServer(server, service.ProductServiceV)
 

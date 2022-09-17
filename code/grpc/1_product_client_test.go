@@ -10,6 +10,7 @@ import (
 	"testing"
 )
 
+// 无tls认证客户端
 func Test66(t *testing.T) {
 	// 1. 新建连接，端口是服务端开放的8002端口
 	// 没有证书会报错
