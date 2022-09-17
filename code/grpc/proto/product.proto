@@ -24,4 +24,10 @@ message ProductResponse{
 service ProdService{
   // 定义方法
   rpc GetProductStock(ProductRequest) returns(ProductResponse);
+//   客户端流
+  rpc UpdateStockClientStream(stream ProductRequest) returns(ProductResponse);
+//    服务端流
+  rpc GetProductStockServerStream(ProductRequest) returns(stream ProductResponse);
+//  双向流
+  rpc SayHelloStream(stream ProductRequest) returns(stream ProductResponse);
 }

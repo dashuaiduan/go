@@ -24,6 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 type ProdServiceClient interface {
 	// 定义方法
 	GetProductStock(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
+	//   客户端流
+	UpdateStockClientStream(ctx context.Context, opts ...grpc.CallOption) (ProdService_UpdateStockClientStreamClient, error)
+	//    服务端流
+	GetProductStockServerStream(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (ProdService_GetProductStockServerStreamClient, error)
+	//  双向流
+	SayHelloStream(ctx context.Context, opts ...grpc.CallOption) (ProdService_SayHelloStreamClient, error)
 }
 
 type prodServiceClient struct {
@@ -43,12 +49,115 @@ func (c *prodServiceClient) GetProductStock(ctx context.Context, in *ProductRequ
 	return out, nil
 }
 
+func (c *prodServiceClient) UpdateStockClientStream(ctx context.Context, opts ...grpc.CallOption) (ProdService_UpdateStockClientStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ProdService_ServiceDesc.Streams[0], "/service.ProdService/UpdateStockClientStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &prodServiceUpdateStockClientStreamClient{stream}
+	return x, nil
+}
+
+type ProdService_UpdateStockClientStreamClient interface {
+	Send(*ProductRequest) error
+	CloseAndRecv() (*ProductResponse, error)
+	grpc.ClientStream
+}
+
+type prodServiceUpdateStockClientStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *prodServiceUpdateStockClientStreamClient) Send(m *ProductRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *prodServiceUpdateStockClientStreamClient) CloseAndRecv() (*ProductResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(ProductResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *prodServiceClient) GetProductStockServerStream(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (ProdService_GetProductStockServerStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ProdService_ServiceDesc.Streams[1], "/service.ProdService/GetProductStockServerStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &prodServiceGetProductStockServerStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ProdService_GetProductStockServerStreamClient interface {
+	Recv() (*ProductResponse, error)
+	grpc.ClientStream
+}
+
+type prodServiceGetProductStockServerStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *prodServiceGetProductStockServerStreamClient) Recv() (*ProductResponse, error) {
+	m := new(ProductResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *prodServiceClient) SayHelloStream(ctx context.Context, opts ...grpc.CallOption) (ProdService_SayHelloStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ProdService_ServiceDesc.Streams[2], "/service.ProdService/SayHelloStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &prodServiceSayHelloStreamClient{stream}
+	return x, nil
+}
+
+type ProdService_SayHelloStreamClient interface {
+	Send(*ProductRequest) error
+	Recv() (*ProductResponse, error)
+	grpc.ClientStream
+}
+
+type prodServiceSayHelloStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *prodServiceSayHelloStreamClient) Send(m *ProductRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *prodServiceSayHelloStreamClient) Recv() (*ProductResponse, error) {
+	m := new(ProductResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ProdServiceServer is the server API for ProdService service.
 // All implementations must embed UnimplementedProdServiceServer
 // for forward compatibility
 type ProdServiceServer interface {
 	// 定义方法
 	GetProductStock(context.Context, *ProductRequest) (*ProductResponse, error)
+	//   客户端流
+	UpdateStockClientStream(ProdService_UpdateStockClientStreamServer) error
+	//    服务端流
+	GetProductStockServerStream(*ProductRequest, ProdService_GetProductStockServerStreamServer) error
+	//  双向流
+	SayHelloStream(ProdService_SayHelloStreamServer) error
 	mustEmbedUnimplementedProdServiceServer()
 }
 
@@ -58,6 +167,15 @@ type UnimplementedProdServiceServer struct {
 
 func (UnimplementedProdServiceServer) GetProductStock(context.Context, *ProductRequest) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProductStock not implemented")
+}
+func (UnimplementedProdServiceServer) UpdateStockClientStream(ProdService_UpdateStockClientStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method UpdateStockClientStream not implemented")
+}
+func (UnimplementedProdServiceServer) GetProductStockServerStream(*ProductRequest, ProdService_GetProductStockServerStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetProductStockServerStream not implemented")
+}
+func (UnimplementedProdServiceServer) SayHelloStream(ProdService_SayHelloStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method SayHelloStream not implemented")
 }
 func (UnimplementedProdServiceServer) mustEmbedUnimplementedProdServiceServer() {}
 
@@ -90,6 +208,79 @@ func _ProdService_GetProductStock_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProdService_UpdateStockClientStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ProdServiceServer).UpdateStockClientStream(&prodServiceUpdateStockClientStreamServer{stream})
+}
+
+type ProdService_UpdateStockClientStreamServer interface {
+	SendAndClose(*ProductResponse) error
+	Recv() (*ProductRequest, error)
+	grpc.ServerStream
+}
+
+type prodServiceUpdateStockClientStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *prodServiceUpdateStockClientStreamServer) SendAndClose(m *ProductResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *prodServiceUpdateStockClientStreamServer) Recv() (*ProductRequest, error) {
+	m := new(ProductRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _ProdService_GetProductStockServerStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ProductRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProdServiceServer).GetProductStockServerStream(m, &prodServiceGetProductStockServerStreamServer{stream})
+}
+
+type ProdService_GetProductStockServerStreamServer interface {
+	Send(*ProductResponse) error
+	grpc.ServerStream
+}
+
+type prodServiceGetProductStockServerStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *prodServiceGetProductStockServerStreamServer) Send(m *ProductResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _ProdService_SayHelloStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ProdServiceServer).SayHelloStream(&prodServiceSayHelloStreamServer{stream})
+}
+
+type ProdService_SayHelloStreamServer interface {
+	Send(*ProductResponse) error
+	Recv() (*ProductRequest, error)
+	grpc.ServerStream
+}
+
+type prodServiceSayHelloStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *prodServiceSayHelloStreamServer) Send(m *ProductResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *prodServiceSayHelloStreamServer) Recv() (*ProductRequest, error) {
+	m := new(ProductRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ProdService_ServiceDesc is the grpc.ServiceDesc for ProdService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +293,23 @@ var ProdService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProdService_GetProductStock_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "UpdateStockClientStream",
+			Handler:       _ProdService_UpdateStockClientStream_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "GetProductStockServerStream",
+			Handler:       _ProdService_GetProductStockServerStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "SayHelloStream",
+			Handler:       _ProdService_SayHelloStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/product.proto",
 }
