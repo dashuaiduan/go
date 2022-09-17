@@ -1,5 +1,8 @@
 // 这个就是protobuf的中间文件
-//protoc --go_out=plugins=grpc:./ .\product.proto
+//protoc --go_out=plugins=grpc:./ .\product.proto    //github方式 go get github.com/golang/protobuf/protoc-gen-go
+
+//protoc  --go_out=./service --go-grpc_out=./service ./proto/product.proto     //google.golang方式  go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+
 // 指定的当前proto语法的版本，有2和3
 syntax = "proto3";
 option go_package="../service"; // 表示生成的go文件的存放地址，会自动生成目录的
