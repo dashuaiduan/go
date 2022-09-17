@@ -10,6 +10,7 @@ import (
 	"testing"
 )
 
+//证书生成 步骤 https://blog.csdn.net/qq_35306993/article/details/126907049
 // 无tls认证客户端
 func Test66(t *testing.T) {
 	// 1. 新建连接，端口是服务端开放的8002端口

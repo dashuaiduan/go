@@ -1,5 +1,7 @@
 package grpc1
 
+//证书生成 步骤 https://blog.csdn.net/qq_35306993/article/details/126907049
+
 import (
 	"a/code/grpc/service"
 	"google.golang.org/grpc"
