@@ -26,7 +26,7 @@ func (tpl ThingProperty) TableName() string {
 
 func (tpl *ThingProperty) List(pageNum, pageSize int64, m map[string]interface{}) (list []ThingProperty, count int64, err error) {
 	findOptions := &options.FindOptions{}
-	findOptions.SetSort(map[string]interface{}{"timestamp": -1})
+	findOptions.SetSort(map[string]interface{}{"_id": -1})
 	findOptions.SetLimit(pageSize)
 	findOptions.SetSkip(pageSize * (pageNum - 1))
 	cursor, err := ThingReport.Find(context.Background(), m, findOptions)
