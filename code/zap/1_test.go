@@ -26,3 +26,21 @@ func Test1(t *testing.T) {
 	)
 	sugar.Infof("Failed to fetch URL: %s", url)
 }
+
+func Test2(t *testing.T) {
+	//	记录层级关系，子记录器 ，预设字段
+	//	logger,_ := zap.NewDevelopment()
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+
+	logger.Info("tracked some metrics1111",
+		zap.Namespace("metrics"),
+		zap.Int("counter", 1),
+	)
+	logger.Info("tracked some metrics222")
+	//子记录器 ，预设字段
+	logger2 := logger.With(
+		zap.Int("counter", 1),
+	)
+	logger2.Info("tracked some metrics")
+}
